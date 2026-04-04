@@ -22,8 +22,5 @@ dev = ["pytest", "httpx"]
 [tool.hatch.build.targets.wheel]
 packages = ["code_debugger_env"]
 
-[tool.uv.scripts]
-server = "uvicorn server.app:app --host 0.0.0.0 --port 7860 --reload"
-
 [project.scripts]
 server = "server.app:main"
