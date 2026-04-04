@@ -1,23 +1,27 @@
 """
 CodeDebugger Environment — server/app.py
-Creates the FastAPI app with all OpenEnv standard endpoints.
+Uses singleton environment instance so /reset and /step share state.
 """
 
 import sys
 import os
 
-# Add both the server dir and the project root to path
-_server_dir = os.path.dirname(os.path.abspath(__file__))
-_project_dir = os.path.dirname(_server_dir)
-sys.path.insert(0, _server_dir)
-sys.path.insert(0, _project_dir)
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from openenv.core.env_server import create_fastapi_app
 from environment import CodeDebuggerEnvironment
 from models import DebugAction, DebugObservation
 
-# create_fastapi_app wires up: /ws /reset /step /state /health /web /docs /metadata /schema /mcp
-app = create_fastapi_app(CodeDebuggerEnvironment, DebugAction, DebugObservation)
+# Singleton: one shared instance so /reset and /step share the same state
+_env_instance = CodeDebuggerEnvironment()
+
+def env_factory():
+    """Return the singleton environment instance."""
+    return _env_instance
+
+# Wire up FastAPI with our singleton factory
+app = create_fastapi_app(env_factory, DebugAction, DebugObservation)
 
 def main():
     import uvicorn

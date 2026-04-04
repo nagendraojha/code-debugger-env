@@ -1,5 +1,4 @@
-"""
-CodeDebugger Environment — server/environment.py
+# CodeDebugger Environment - FIXED
 
 An RL environment where an AI agent must debug Python code snippets.
 Each episode presents a buggy function; the agent submits fixed code.
