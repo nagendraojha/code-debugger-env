@@ -392,7 +392,8 @@ class CodeDebuggerEnvironment(Environment):
     def step(self, action: DebugAction, timeout_s=None, **kwargs) -> DebugObservation:
         """Grade the agent's fix attempt."""
         if self._puzzle is None:
-            raise RuntimeError("Call reset() before step().")
+            # Auto-reset if no episode started
+            self.reset()
 
         self._attempts_used += 1
         self._state.step_count += 1
