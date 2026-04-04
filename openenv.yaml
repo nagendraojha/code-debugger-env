@@ -1,0 +1,24 @@
+name: code_debugger_env
+version: "1.0.0"
+description: >
+  An RL environment where an AI agent debugs Python code snippets.
+  The agent receives a buggy function and must submit a corrected version.
+  Graded on hidden test cases with partial credit, speed bonuses, and
+  progressive hints.
+
+author: Nagendra Kumar Ojha
+license: MIT
+
+environment:
+  action: DebugAction
+  observation: DebugObservation
+  state: DebugState
+  supports_concurrent_sessions: true
+  max_attempts_per_episode: 5
+
+difficulty_levels:
+  - easy
+  - medium
+  - hard
+
+reward_range: [0.0, 1.5]
