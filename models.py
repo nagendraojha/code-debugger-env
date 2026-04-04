@@ -20,15 +20,15 @@ class DebugObservation(Observation):
     What the agent sees after each step.
     Inherits: done: bool, reward: Optional[float]
     """
-    buggy_code: str            # The broken Python snippet to fix
-    error_description: str     # Human-readable description of the bug category
-    hint: Optional[str] = None  # Progressive hint (unlocked after N failed attempts)
-    tests_passed: int          # Number of test cases passed so far
-    tests_total: int           # Total test cases
-    attempts_used: int         # How many fix attempts consumed
-    max_attempts: int          # Max allowed
-    feedback: str              # Detailed feedback on last submission
-    difficulty: str            # "easy" | "medium" | "hard"
+    buggy_code: str = ""          # The broken Python snippet to fix
+    error_description: str = ""   # Human-readable description of the bug category
+    hint: Optional[str] = None    # Progressive hint (unlocked after N failed attempts)
+    tests_passed: int = 0         # Number of test cases passed so far
+    tests_total: int = 0          # Total test cases
+    attempts_used: int = 0        # How many fix attempts consumed
+    max_attempts: int = 5         # Max allowed
+    feedback: str = ""            # Detailed feedback on last submission
+    difficulty: str = "easy"      # "easy" | "medium" | "hard"
 
 
 class DebugState(State):
