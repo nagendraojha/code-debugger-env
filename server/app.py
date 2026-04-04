@@ -16,5 +16,12 @@ from openenv.core.env_server import create_fastapi_app
 from environment import CodeDebuggerEnvironment
 from models import DebugAction, DebugObservation
 
-# create_fastapi_app wires up: /ws /reset /step /state /health /web /docs
+# create_fastapi_app wires up: /ws /reset /step /state /health /web /docs /metadata /schema /mcp
 app = create_fastapi_app(CodeDebuggerEnvironment, DebugAction, DebugObservation)
+
+def main():
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=7860)
+
+if __name__ == "__main__":
+    main()
