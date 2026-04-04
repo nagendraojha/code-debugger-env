@@ -392,8 +392,7 @@ class CodeDebuggerEnvironment(Environment):
     def step(self, action: DebugAction, timeout_s=None, **kwargs) -> DebugObservation:
         """Grade the agent's fix attempt."""
         if self._puzzle is None:
-            # Auto-reset if no episode started
-            self.reset()
+            self.reset()  # Auto-reset if no episode started
 
         self._attempts_used += 1
         self._state.step_count += 1
@@ -406,7 +405,7 @@ class CodeDebuggerEnvironment(Environment):
 
         all_passed = n_passed == n_total
         out_of_attempts = self._attempts_used >= self.MAX_ATTEMPTS
-        done = all_passed or out_of_attempts
+        done = bool(all_passed or out_of_attempts)
 
         # --- Compute reward ---
         reward = self._compute_reward(n_passed, n_total, all_passed)
@@ -470,10 +469,9 @@ class CodeDebuggerEnvironment(Environment):
         hints = self._puzzle.get("hints", [])
         if not hints:
             return None
+        # Unlock first hint after attempt 2, second hint after attempt 3
         if self._attempts_used < 2:
             return None
         hint_idx = min(self._attempts_used - 2, len(hints) - 1)
-        # Only count as "used" if this is a new hint level
-        if hint_idx >= self._hints_used:
-            self._hints_used = hint_idx + 1
+        self._hints_used = hint_idx + 1
         return hints[hint_idx]
