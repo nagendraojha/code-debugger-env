@@ -22,7 +22,7 @@ class DebugObservation(Observation):
     """
     buggy_code: str            # The broken Python snippet to fix
     error_description: str     # Human-readable description of the bug category
-    hint: Optional[str]        # Progressive hint (unlocked after N failed attempts)
+    hint: Optional[str] = None  # Progressive hint (unlocked after N failed attempts)
     tests_passed: int          # Number of test cases passed so far
     tests_total: int           # Total test cases
     attempts_used: int         # How many fix attempts consumed
