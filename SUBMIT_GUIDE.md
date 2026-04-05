@@ -16,7 +16,6 @@ pip install openenv-core
 pip install huggingface_hub
 huggingface-cli login    # enter your HF token
 ```
-token: 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
 Get your HF token at: https://huggingface.co/settings/tokens
 
 ---
