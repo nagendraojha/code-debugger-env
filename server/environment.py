@@ -1,15 +1,4 @@
-# CodeDebugger Environment - FIXED
-
-An RL environment where an AI agent must debug Python code snippets.
-Each episode presents a buggy function; the agent submits fixed code.
-Hidden test cases grade each attempt. Reward scales with quality and speed.
-
-Evaluation criteria this environment excels at:
-  ✅ Runtime correctness   — sandboxed exec with timeout
-  ✅ Interface compliance  — full reset/step/state OpenEnv standard
-  ✅ Task design           — clear, realistic, multi-difficulty, testable
-  ✅ Grading logic         — partial credit, speed bonus, hint penalty
-"""
+# CodeDebugger Environment - server/environment.py
 
 import ast
 import random
@@ -307,12 +296,12 @@ def _run_tests(code: str, tests: List[Tuple[str, Any]]) -> Tuple[int, List[str]]
     for expr, expected in tests:
         result, err = _safe_exec(code, expr)
         if err:
-            lines.append(f"  ✗ {expr} → ERROR: {err.strip()[:120]}")
+            lines.append(f"  FAIL {expr}: ERROR: {err.strip()[:120]}")
         elif result == expected:
             passed += 1
-            lines.append(f"  ✓ {expr} → {result!r}")
+            lines.append(f"  PASS {expr}: {result!r}")
         else:
-            lines.append(f"  ✗ {expr} → got {result!r}, expected {expected!r}")
+            lines.append(f"  FAIL {expr}: got {result!r}, expected {expected!r}")
     return passed, lines
 
 
@@ -380,9 +369,9 @@ class CodeDebuggerEnvironment(Environment):
             attempts_used=0,
             max_attempts=self.MAX_ATTEMPTS,
             feedback=(
-                f"🐛 Debug this {self._puzzle['difficulty']} puzzle!\n"
-                f"Function: `{self._puzzle['function']}`\n"
-                f"Bug description: {self._puzzle['error_description']}\n"
+                f"Debug this {self._puzzle['difficulty']} puzzle!\n"
+                f"Function: {self._puzzle['function']}\n"
+                f"Bug: {self._puzzle['error_description']}\n"
                 f"You have {self.MAX_ATTEMPTS} attempts. Hints unlock after 2 failed attempts."
             ),
             difficulty=self._puzzle["difficulty"],
@@ -413,17 +402,16 @@ class CodeDebuggerEnvironment(Environment):
         hint = self._maybe_hint()
 
         # --- Build human-readable feedback ---
-        status = "✅ All tests passed!" if all_passed else (
-            "❌ Out of attempts." if out_of_attempts else
-            f"⚠️  {n_passed}/{n_total} tests passed — keep going."
+        status = "All tests passed!" if all_passed else (
+            "Out of attempts." if out_of_attempts else
+            f"{n_passed}/{n_total} tests passed - keep going."
         )
         feedback = (
-            f"{status}\n"
-            f"Test results:\n" + "\n".join(feedback_lines) +
+            status + "\nTest results:\n" + "\n".join(feedback_lines) +
             f"\nReward: {reward:.3f}"
         )
         if done and not all_passed:
-            feedback += f"\n\n💡 Correct solution:\n{self._puzzle['correct_code']}"
+            feedback += "\n\nCorrect solution:\n" + self._puzzle['correct_code']
 
         return DebugObservation(
             done=done,
